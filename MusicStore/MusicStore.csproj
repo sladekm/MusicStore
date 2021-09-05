@@ -16,8 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\IRepositories\" />
-    <Folder Include="Data\Repositories\" />
     <Folder Include="Services\" />
     <Folder Include="Root\" />
   </ItemGroup>
