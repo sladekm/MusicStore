@@ -8,9 +8,13 @@ namespace MusicStore.Models
     public class CartItem
     {
         public int CartItemId { get; set; }
+
         public int AlbumId { get; set; }
+
         public string CartId { get; set; }
+
         public int Quantity { get; set; }
+
         public virtual Album Album { get; set; }
     }
 }
