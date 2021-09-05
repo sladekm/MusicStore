@@ -15,4 +15,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\IRepositories\" />
+    <Folder Include="Data\Repositories\" />
+    <Folder Include="Entities\" />
+    <Folder Include="Services\" />
+    <Folder Include="Root\" />
+  </ItemGroup>
+
 </Project>
