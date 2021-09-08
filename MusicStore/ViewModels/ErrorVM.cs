@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 
 namespace MusicStore.ViewModels
 {
-    public class ErrorViewModel
+    public class ErrorVM
     {
         public string RequestId { get; set; }
 
