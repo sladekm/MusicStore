@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MusicStore.Services.EmailSender;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace MusicStore
 {
@@ -41,14 +43,26 @@ namespace MusicStore
 
             services.AddControllersWithViews();
 
+            //Data access
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
+            //Authentication
             services.AddAuthentication()
                 .AddFacebook(options =>
                 {
                     options.AppId= "576735066791280";
                     options.AppSecret = "5f51612638494f5990e2a3ff75db9199";
                 });
+
+            //Email service
+            services.AddSingleton(emailConfig => Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            services.AddScoped<IEmailSender, EmailSender>();
+
+            services.Configure<FormOptions>(o => {
+                o.ValueLengthLimit = int.MaxValue;
+                o.MultipartBodyLengthLimit = int.MaxValue;
+                o.MemoryBufferThreshold = int.MaxValue;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
