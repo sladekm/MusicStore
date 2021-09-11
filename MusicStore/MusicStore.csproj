@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\" />
+    <Folder Include="Logs\" />
     <Folder Include="Root\" />
   </ItemGroup>
 
