@@ -1,0 +1,41 @@
+﻿@model MusicStore.ViewModels.Account.AccountConfirmEmailVM
+
+@{
+    ViewData["Title"] = "ConfirmEmail";
+}
+
+@if (Model.EmailConfirmed)
+{
+    <h1>Email address confirmation successful</h1>
+    <hr />
+    <div>
+        Thank you for confirming your email address, you can now <a asp-action="Login">Log in</a>
+    </div>
+}
+else
+{
+    <h1>Confirm email Address</h1>
+    <hr />
+    <div>
+        @if (!Model.EmailSent)
+        {
+            <h4>To complete the registration, please click on the confirmation link we have sent to your email address</h4>
+        }
+        else
+        {
+            <h4>Email with the confirmation link has been resent to your email address</h4>
+        }
+
+        <form asp-action="ConfirmEmail">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Email" type="hidden" />
+
+            <p>No email recieved?</p>
+            <div class="form-group">
+                <input type="submit" value="Resend confirmation email" class="btn btn-primary" />
+            </div>
+        </form>
+
+    </div>
+}
+

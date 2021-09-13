@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using MusicStore.Models;
+using MusicStore.Services.EmailSender;
 using MusicStore.ViewModels;
 using MusicStore.ViewModels.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MusicStore.Controllers
@@ -17,12 +20,14 @@ namespace MusicStore.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
             _logger = logger;
         }
 
@@ -44,9 +49,11 @@ namespace MusicStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(AccountLoginVM model, string returnUrl)
         {
+            model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure:false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(returnUrl))
@@ -54,7 +61,13 @@ namespace MusicStore.Controllers
                         return LocalRedirect(returnUrl);
                     }
 
-                    return RedirectToAction("index", "home");
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password) && !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    return RedirectToAction("ConfirmEmail", new { user.Email });
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt");
@@ -84,7 +97,8 @@ namespace MusicStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser {
+                var user = new ApplicationUser
+                {
                     UserName = model.Email,
                     Email = model.Email,
                     FirstName = model.FirstName,
@@ -98,8 +112,15 @@ namespace MusicStore.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("index", "home");
+                    await _userManager.AddToRoleAsync(user, "User");
+                    await SendEmailConfirmationAsync(user);
+
+                    if (_signInManager.IsSignedIn(User) & User.IsInRole("Administrator"))
+                    {
+                        return RedirectToAction("Users", "Administration");
+                    }
+ 
+                    return RedirectToAction("ConfirmEmail", new { user.Email });
                 }
 
                 foreach (var error in result.Errors)
@@ -108,6 +129,64 @@ namespace MusicStore.Controllers
                 }
             }
 
+            return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token, string email)
+        {
+            var model = new AccountConfirmEmailVM
+            {
+                Email = email
+            };
+
+            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(token))
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    ViewBag.ErrorTitle = "Not found";
+                    ViewBag.ErrorMessage = $"The user ID {userId} is invalid";
+                    return View("Error");
+                }
+
+                token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    model.EmailConfirmed = true;
+                    return View(model);
+                }
+
+                ViewBag.ErrorMessage = $"Error confirming your email address";
+                return View("Error");
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmEmail(AccountConfirmEmailVM model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                if (user.EmailConfirmed)
+                {
+                    model.EmailConfirmed = true;
+                    return View(model);
+                } 
+
+                await SendEmailConfirmationAsync(user);
+
+                model.EmailSent = true;
+                return View(model);
+            }
+
+            ModelState.AddModelError(string.Empty, "Something went wrong");
             return View(model);
         }
 
@@ -125,7 +204,7 @@ namespace MusicStore.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
-             returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl = returnUrl ?? Url.Content("~/");
 
             var model = new AccountLoginVM
             {
@@ -185,6 +264,15 @@ namespace MusicStore.Controllers
                 return View("Login", model);
 
             }
+        }
+
+        private async Task SendEmailConfirmationAsync(ApplicationUser user)
+        {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+            var message = new Message(user.Email, "Confirm email address", $"Please confirm your account by clicking <a href=\"{confirmationLink}\">here</a>");
+            await _emailSender.SendEmailAsync(message);
         }
     }
 }

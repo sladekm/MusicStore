@@ -12,6 +12,7 @@
         <hr />
         <form asp-action="Login">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="ReturnUrl" type="hidden" />
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
