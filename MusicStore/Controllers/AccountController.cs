@@ -65,7 +65,7 @@ namespace MusicStore.Controllers
                 }
 
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password) && !(await _userManager.IsEmailConfirmedAsync(user)))
+                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password) && !await _userManager.IsEmailConfirmedAsync(user))
                 {
                     return RedirectToAction("ConfirmEmail", new { user.Email });
                 }
@@ -238,6 +238,12 @@ namespace MusicStore.Controllers
                 if (email != null)
                 {
                     var user = await _userManager.FindByEmailAsync(email);
+
+                    if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        await _userManager.DeleteAsync(user);
+                        user = null;
+                    }
 
                     if (user == null)
                     {
