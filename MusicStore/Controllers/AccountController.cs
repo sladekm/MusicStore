@@ -113,7 +113,7 @@ namespace MusicStore.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "User");
-                    await SendEmailConfirmationAsync(user);
+                    await SendEmailConfirmationTokenAsync(user);
 
                     if (_signInManager.IsSignedIn(User) & User.IsInRole("Administrator"))
                     {
@@ -180,7 +180,7 @@ namespace MusicStore.Controllers
                     return View(model);
                 } 
 
-                await SendEmailConfirmationAsync(user);
+                await SendEmailConfirmationTokenAsync(user);
 
                 model.EmailSent = true;
                 return View(model);
@@ -266,12 +266,90 @@ namespace MusicStore.Controllers
             }
         }
 
-        private async Task SendEmailConfirmationAsync(ApplicationUser user)
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(AccountForgotPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null && await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    await SendPasswordResetTokenAsync(user);
+                }
+
+                ViewBag.Title = "Password reset link sent";
+                ViewBag.Message = "If you are a registered user, please go to the email address you provided and click on the link we have sent you to reset your password";
+                return View("Info");
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid password reset token");
+            }
+
+            return View(new AccountResetPasswordVM());
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(AccountResetPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.UserId);
+                if (user != null)
+                {
+                    var token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token));
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+
+                        return View(model);
+                    }
+                }
+
+                model.PasswordReset = true;
+            }
+
+            return View(model);
+        }
+
+        private async Task SendEmailConfirmationTokenAsync(ApplicationUser user)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
             var message = new Message(user.Email, "Confirm email address", $"Please confirm your account by clicking <a href=\"{confirmationLink}\">here</a>");
+            await _emailSender.SendEmailAsync(message);
+        }
+
+        private async Task SendPasswordResetTokenAsync(ApplicationUser user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var confirmationLink = Url.Action("ResetPassword", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+            var message = new Message(user.Email, "Reset password", $"Reset your password by clicking <a href=\"{confirmationLink}\">here</a>");
             await _emailSender.SendEmailAsync(message);
         }
     }

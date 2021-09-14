@@ -14,11 +14,11 @@ else
 
 @if (ViewBag.ErrorMessage == null)
 {
-    <p>An error occurred while processing your request. The support team is notified and working on the fix</p>
-    <p>Please contact us at admin@localhost.com</p>
+    <h4>An error occurred while processing your request. The support team is notified and working on the fix</h4>
+    <h4>Please contact us at admin@localhost.com</h4>
 }
 else
 {
-    <p>@ViewBag.ErrorMessage</p>
+    <h4>@ViewBag.ErrorMessage</h4>
 }
 
