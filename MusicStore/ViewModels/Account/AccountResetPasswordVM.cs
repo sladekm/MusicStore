@@ -25,6 +25,7 @@ namespace MusicStore.ViewModels.Account
 
         public string Token { get; set; }
 
+        [ScaffoldColumn(false)]
         public bool PasswordReset { get; set; }
     }
 }
