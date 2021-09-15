@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MusicStore.Services.EmailSender;
 using Microsoft.AspNetCore.Http.Features;
+using MusicStore.Security;
 
 namespace MusicStore
 {
@@ -37,12 +38,27 @@ namespace MusicStore
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+
+                options.Tokens.EmailConfirmationTokenProvider = "CustomEmailProvider";
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomEmailConfirmationTokenProvider<ApplicationUser>>("CustomEmailConfirmation");
+
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromHours(5)
+            );
+
+            services.Configure<CustomEmailConfirmationTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromDays(1)
+            );
 
             services.AddControllersWithViews();
+
 
             //Data access
             services.AddTransient<IUnitOfWork, UnitOfWork>();
