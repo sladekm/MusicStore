@@ -53,7 +53,7 @@ namespace MusicStore.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(returnUrl))
@@ -62,6 +62,11 @@ namespace MusicStore.Controllers
                     }
 
                     return RedirectToAction("Index", "Home");
+                }
+
+                if (result.IsLockedOut)
+                {
+                    return View("AccountLocked");
                 }
 
                 var user = await _userManager.FindByEmailAsync(model.Email);
@@ -332,6 +337,11 @@ namespace MusicStore.Controllers
                         }
 
                         return View(model);
+                    }
+
+                    if (await _userManager.IsLockedOutAsync(user))
+                    {
+                        await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
                     }
                 }
 

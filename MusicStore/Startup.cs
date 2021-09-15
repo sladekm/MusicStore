@@ -44,6 +44,9 @@ namespace MusicStore
                 options.SignIn.RequireConfirmedAccount = true;
 
                 options.Tokens.EmailConfirmationTokenProvider = "CustomEmailProvider";
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
