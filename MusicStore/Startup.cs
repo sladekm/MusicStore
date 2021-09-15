@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using MusicStore.Services.EmailSender;
 using Microsoft.AspNetCore.Http.Features;
 using MusicStore.Security;
+using MusicStore.Mapping;
 
 namespace MusicStore
 {
@@ -80,6 +81,9 @@ namespace MusicStore
                 o.MultipartBodyLengthLimit = int.MaxValue;
                 o.MemoryBufferThreshold = int.MaxValue;
             });
+
+            //AutoMapper
+            services.AddAutoMapper(typeof(MappingProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
