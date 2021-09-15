@@ -50,7 +50,7 @@ namespace MusicStore.Controllers
                 return RedirectToAction("AddPassword");
             }
 
-            return View();
+            return View(new ManageChangePasswordVM());
         }
 
         [HttpPost]
@@ -78,8 +78,7 @@ namespace MusicStore.Controllers
 
                 await _signInManager.RefreshSignInAsync(user);
 
-                ViewBag.Title = "Your password was successfuly changed";
-                return View("Info");
+                model.PasswordChanged = true;
             }
             return View(model);
         }
@@ -93,7 +92,7 @@ namespace MusicStore.Controllers
                 return RedirectToAction("ChangePassword");
             }
 
-            return View();
+            return View(new ManageAddPasswordVM());
         }
 
         [HttpPost]
@@ -121,8 +120,7 @@ namespace MusicStore.Controllers
 
                 await _signInManager.RefreshSignInAsync(user);
 
-                ViewBag.Title = "Your password was successfuly added";
-                return View("Info");
+                model.PasswordCreated = true;
             }
             return View(model);
         }

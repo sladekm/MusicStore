@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MusicStore.Models;
+using MusicStore.ViewModels.Account;
 using MusicStore.ViewModels.Manage;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace MusicStore.Mapping
         public MappingProfile()
         {
             CreateMap<ApplicationUser, ManageAccountInformationVM>().ReverseMap();
+            CreateMap<ApplicationUser, AccountRegisterVM>().ReverseMap().ForMember(dst => dst.UserName, o => o.MapFrom(src => src.Email));
         }
     }
 }

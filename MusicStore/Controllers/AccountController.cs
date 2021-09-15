@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -22,13 +23,15 @@ namespace MusicStore.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AccountController> _logger;
+        private readonly IMapper _mapper;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ILogger<AccountController> logger, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -102,18 +105,7 @@ namespace MusicStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Address = model.Address,
-                    City = model.City,
-                    State = model.State,
-                    PostalCode = model.PostalCode,
-                    Country = model.Country
-                };
+                var user = _mapper.Map<ApplicationUser>(model);
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -281,7 +273,7 @@ namespace MusicStore.Controllers
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
-            return View();
+            return View(new AccountForgotPasswordVM());
         }
 
         [HttpPost]
@@ -297,9 +289,7 @@ namespace MusicStore.Controllers
                     await SendPasswordResetTokenAsync(user);
                 }
 
-                ViewBag.Title = "Password reset link sent";
-                ViewBag.Message = "If you are a registered user, please go to the email address you provided and click on the link we have sent you to reset your password";
-                return View("Info");
+                model.ResetLinkSent = true;
             }
 
             return View(model);

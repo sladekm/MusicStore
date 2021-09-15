@@ -17,5 +17,8 @@ namespace MusicStore.ViewModels.Manage
         [Compare("Password")]
         [Display(Name = "Confirm password")]
         public string PasswordConfirmation { get; set; }
+
+        [ScaffoldColumn(false)]
+        public bool PasswordCreated { get; set; }
     }
 }
