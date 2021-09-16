@@ -13,8 +13,9 @@ namespace MusicStore.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<ApplicationUser, ManageAccountInformationVM>().ReverseMap();
             CreateMap<ApplicationUser, AccountRegisterVM>().ReverseMap().ForMember(dst => dst.UserName, o => o.MapFrom(src => src.Email));
+            CreateMap<ApplicationUser, ManageAccountInformationVM>().ReverseMap();
+            CreateMap<ApplicationUser, ManageChangeBillingInformationVM>().ReverseMap();
         }
     }
 }

@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace MusicStore.ViewModels.Manage
 {
-    public class ManageAccountInformationVM
+    public class ManageChangeBillingInformationVM
     {
-        [Display(Name = "Email address")]
-        public string Email { get; set; }
-
         [Display(Name = "First name")]
         public string FirstName { get; set; }
 
@@ -27,8 +24,5 @@ namespace MusicStore.ViewModels.Manage
         public string PostalCode { get; set; }
 
         public string Country { get; set; }
-
-        [ScaffoldColumn(false)]
-        public bool HasPassword { get; set; }
     }
 }

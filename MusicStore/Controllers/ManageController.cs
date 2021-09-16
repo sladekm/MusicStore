@@ -124,5 +124,34 @@ namespace MusicStore.Controllers
             }
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeBillingInformation()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var model = _mapper.Map<ManageChangeBillingInformationVM>(user);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeBillingInformation(ManageChangeBillingInformationVM model)
+         {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                _mapper.Map<ManageChangeBillingInformationVM, ApplicationUser>(model, user);
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, "Something went wrong");
+            }
+
+            return View(model);
+        }
     }
 }
