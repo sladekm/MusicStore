@@ -24,7 +24,7 @@ namespace MusicStore.Controllers
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
             var statusCodeResult = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
-            _logger.LogWarning($"[{statusCode}]: {ReasonPhrases.GetReasonPhrase(statusCode).ToUpper()} error occured. Path: \"{statusCodeResult.OriginalPath}\" Query string: \"{statusCodeResult.OriginalQueryString}\"");
+            _logger.LogWarning($"[{statusCode}]: {ReasonPhrases.GetReasonPhrase(statusCode).ToUpper()} Path: \"{statusCodeResult.OriginalPath}\" Query string: \"{statusCodeResult.OriginalQueryString}\"");
 
             ViewBag.ErrorTitle = $"{statusCode}: {ReasonPhrases.GetReasonPhrase(statusCode)}";
             switch (statusCode)
@@ -43,7 +43,7 @@ namespace MusicStore.Controllers
         {
             var exceptionDetails = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
 
-            _logger.LogError($"The path {exceptionDetails.Path} threw an exception {exceptionDetails.Error}");
+            _logger.LogError($"An exception occured at path: {exceptionDetails.Path}\r\n{exceptionDetails.Error}");
 
             return View("Error");
         }

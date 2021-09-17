@@ -60,11 +60,6 @@ namespace MusicStore.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-
                 var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
                 if (!result.Succeeded)
                 {
@@ -73,11 +68,13 @@ namespace MusicStore.Controllers
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
 
+                    _logger.LogWarning($"[Change password] Failed - User: {user.Email}");
                     return View();
                 }
 
                 await _signInManager.RefreshSignInAsync(user);
 
+                _logger.LogInformation($"[Change password] Successful - User: {user.Email}");
                 model.PasswordChanged = true;
             }
             return View(model);
@@ -102,11 +99,6 @@ namespace MusicStore.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-
                 var result = await _userManager.AddPasswordAsync(user, model.Password);
                 if (!result.Succeeded)
                 {
@@ -115,11 +107,13 @@ namespace MusicStore.Controllers
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
 
+                    _logger.LogWarning($"[Add password] Failed - User: {user.Email}");
                     return View();
                 }
 
                 await _signInManager.RefreshSignInAsync(user);
 
+                _logger.LogInformation($"[Add password] Successful - User: {user.Email}");
                 model.PasswordCreated = true;
             }
             return View(model);
@@ -145,9 +139,11 @@ namespace MusicStore.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation($"[Change billing information] Successful - User: {user.Email}");
                     return RedirectToAction("Index");
                 }
 
+                _logger.LogWarning($"[Change billing information] Failed - User: {user.Email}");
                 ModelState.AddModelError(string.Empty, "Something went wrong");
             }
 
