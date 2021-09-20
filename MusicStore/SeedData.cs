@@ -23,7 +23,8 @@ namespace MusicStore
                     UserName = "admin@localhost.com",
                     Email = "admin@localhost.com",
                     FirstName = "Admin",
-                    LastName = "Admin"
+                    LastName = "Admin",
+                    EmailConfirmed = true
                 };
 
                 var result = userManager.CreateAsync(user, "P@ssword1").Result;

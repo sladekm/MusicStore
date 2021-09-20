@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MusicStore.Data.Migrations
+namespace MusicStore.Migrations
 {
-    public partial class AddedBaseDatabaseTables : Migration
+    public partial class AddedBaseTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,13 +24,6 @@ namespace MusicStore.Data.Migrations
                 table: "AspNetUsers",
                 type: "nvarchar(max)",
                 nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "Discriminator",
-                table: "AspNetUsers",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
                 name: "FirstName",
@@ -241,10 +234,6 @@ namespace MusicStore.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Country",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "Discriminator",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
