@@ -14,7 +14,11 @@ namespace MusicStore.Data
         {
         }
 
-
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Seed();
+        }
 
         public DbSet<Album> Albums { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
