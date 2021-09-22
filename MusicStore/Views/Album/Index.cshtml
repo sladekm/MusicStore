@@ -1,0 +1,63 @@
+﻿@model X.PagedList.IPagedList<MusicStore.ViewModels.Album.AlbumVM>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Core.Common
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Albums</h1>
+<hr />
+<form asp-action="Index" method="get">
+    @using (Html.BeginForm("Index", "Student", FormMethod.Get))
+    {
+        <p>
+            Search by title or artist: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-action="Index" class="btn btn-outline-secondary">Clear search</a>
+        </p>
+    }
+</form>
+Sort by:
+@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm, currentFilter = ViewBag.CurrentFilter })
+@Html.ActionLink("Artist", "Index", new { sortOrder = ViewBag.ArtistSortParm, currentFilter = ViewBag.CurrentFilter })
+@Html.ActionLink("Genre", "Index", new { sortOrder = ViewBag.GenreSortParm, currentFilter = ViewBag.CurrentFilter })
+@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm, currentFilter = ViewBag.CurrentFilter })
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img class="card-img-top imageThumbnail" src=@item.AlbumArtUrl alt="Image" asp-append-version="true" />
+                        <div class="card-body">
+                            <p class="card-text">Title: @Html.DisplayFor(modelItem => item.Title)</p>
+                            <p class="card-text">Artist: @Html.DisplayFor(modelItem => item.Artist.Name)</p>
+                            <p class="card-text">Genre: @Html.DisplayFor(modelItem => item.Genre.Name)</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>@Html.DisplayFor(modelItem => item.Price) $</strong>
+                                <div class="btn-group">
+                                    @*<a asp-action="Details" asp-route-id="" class="btn btn-sm btn-outline-secondary">Details</a>*@
+                                    <a asp-action="AddToCart" asp-route-id="" class="btn btn-sm btn-outline-secondary">Add to cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="mt-3">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+            @Html.PagedListPager(Model, page => Url.Action("Index",
+             new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }),
+             new PagedListRenderOptions
+             {
+                 LiElementClasses = new string[] { "page-item" },
+                 PageClasses = new string[] { "page-link" }
+             })
+        </div>
+    </div>
+</div>

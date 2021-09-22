@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace MusicStore.Data.Repositories
 {
@@ -81,6 +82,28 @@ namespace MusicStore.Data.Repositories
         public void Update(T entity)
         {
             _db.Update(entity);
+        }
+
+        public IPagedList<T> FindPaged(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int pageNumber = 1, int pageSize = 12)
+        {
+            IQueryable<T> query = _db;
+
+            if (expression != null)
+            {
+                query = query.Where(expression);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return query.ToPagedList<T>(pageNumber, pageSize);
         }
     }
 }
