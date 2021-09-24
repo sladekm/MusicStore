@@ -12,7 +12,7 @@ namespace MusicStore.Data.IRepositories
     {
         public IGenericRepository<Album> Albums { get; }
         public IGenericRepository<Artist> Artists { get; }
-        public IGenericRepository<CartItem> CartItems { get; }
+        public ICartItemRepository CartItems { get; }
         public IGenericRepository<Genre> Genres { get; }
         public IGenericRepository<Order> Orders { get; }
         public IGenericRepository<OrderDetail> OrderDetails { get; }

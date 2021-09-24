@@ -20,10 +20,10 @@
     }
 </form>
 Sort by:
-@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm, currentFilter = ViewBag.CurrentFilter })
-@Html.ActionLink("Artist", "Index", new { sortOrder = ViewBag.ArtistSortParm, currentFilter = ViewBag.CurrentFilter })
-@Html.ActionLink("Genre", "Index", new { sortOrder = ViewBag.GenreSortParm, currentFilter = ViewBag.CurrentFilter })
-@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm, currentFilter = ViewBag.CurrentFilter })
+<a asp-action="Index" asp-route-sortOrder=@ViewBag.TitleSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>Title</a>
+<a asp-action="Index" asp-route-sortOrder=@ViewBag.ArtistSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>Artist</a>
+<a asp-action="Index" asp-route-sortOrder=@ViewBag.GenreSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>Genre</a>
+<a asp-action="Index" asp-route-sortOrder=@ViewBag.PriceSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>Price</a>
 <div class="album py-5 bg-light">
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -33,15 +33,14 @@ Sort by:
                     <div class="card shadow-sm">
                         <img class="card-img-top imageThumbnail" src=@item.AlbumArtUrl alt="Image" asp-append-version="true" />
                         <div class="card-body">
-                            <p class="card-text">Title: @Html.DisplayFor(modelItem => item.Title)</p>
-                            <p class="card-text">Artist: @Html.DisplayFor(modelItem => item.Artist.Name)</p>
-                            <p class="card-text">Genre: @Html.DisplayFor(modelItem => item.Genre.Name)</p>
+                            <p class="card-text">Title: @item.Title</p>
+                            <p class="card-text">Artist: @item.Artist.Name</p>
+                            <p class="card-text">Genre: @item.Genre.Name</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <strong>@Html.DisplayFor(modelItem => item.Price) $</strong>
-                                <div class="btn-group">
-                                    @*<a asp-action="Details" asp-route-id="" class="btn btn-sm btn-outline-secondary">Details</a>*@
-                                    <a asp-action="AddToCart" asp-route-id="" class="btn btn-sm btn-outline-secondary">Add to cart</a>
-                                </div>
+                                <strong>@item.Price.ToString("c")</strong>
+                                <form asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-albumId="@item.AlbumId" method="post">
+                                    <input type="submit" value="Add to cart" class="btn btn-outline-secondary">
+                                </form>
                             </div>
                         </div>
                     </div>

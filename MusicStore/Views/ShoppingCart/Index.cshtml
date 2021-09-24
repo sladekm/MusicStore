@@ -1,0 +1,67 @@
+﻿@model MusicStore.ViewModels.ShoppingCart.ShoppingCartVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Shopping Cart</h1>
+<hr />
+
+@if (Model.ItemsCount < 1)
+{
+    <h4>Your cart is empty</h4>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Album</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td>@item.Album.Title</td>
+                    <td>
+                        <form class="d-inline" asp-action="RemoveFromCart" asp-route-albumId="@item.AlbumId" method="post">
+                            <input type="submit" value="-" class="btn" />
+                        </form>
+                        @item.Quantity
+                        <form class="d-inline" asp-action="AddToCart" asp-route-albumId="@item.AlbumId" method="post">
+                            <input type="submit" value="+" class="btn" />
+                        </form>
+
+                    </td>
+                    <td>@item.Album.Price.ToString("c")</td>
+                    <td>@((item.Album.Price * item.Quantity).ToString("c"))</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"><strong>Total: </strong></td>
+                <td><strong>@Model.CartTotal.ToString("c")</strong></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <form asp-action="EmptyCart" method="post">
+                        <input type="submit" value="Empty cart" class="btn btn-danger" aria-hidden="true">
+                    </form>
+
+                </td>
+                <td class="text-center">
+                    <form asp-controller="Order" asp-action="Checkout" method="post">
+                        <input type="submit" value="Checkout" class="btn btn-success" aria-hidden="true">
+                    </form>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+

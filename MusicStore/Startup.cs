@@ -19,6 +19,8 @@ using MusicStore.Services.EmailSender;
 using Microsoft.AspNetCore.Http.Features;
 using MusicStore.Security;
 using MusicStore.Mapping;
+using MusicStore.Services.ShoppingCart;
+using Microsoft.AspNetCore.Http;
 
 namespace MusicStore
 {
@@ -63,6 +65,8 @@ namespace MusicStore
 
             services.AddControllersWithViews();
 
+            //Shopping cart
+            services.AddTransient<IShoppingCart>(sp => ShoppingCart.GetCart(sp.GetRequiredService<IUnitOfWork>(), sp.GetRequiredService<IHttpContextAccessor>().HttpContext));
 
             //Data access
             services.AddTransient<IUnitOfWork, UnitOfWork>();

@@ -12,7 +12,7 @@ namespace MusicStore.Data.Repositories
         private ApplicationDbContext _context;
         private IGenericRepository<Album> _albums;
         private IGenericRepository<Artist> _artists;
-        private IGenericRepository<CartItem> _cartItems;
+        private ICartItemRepository _cartItems;
         private IGenericRepository<Genre> _genres;
         private IGenericRepository<Order> _orders;
         private IGenericRepository<OrderDetail> _orderDetials;
@@ -26,7 +26,7 @@ namespace MusicStore.Data.Repositories
 
         public IGenericRepository<Artist> Artists => _artists ??= new GenericRepository<Artist>(_context);
 
-        public IGenericRepository<CartItem> CartItems => _cartItems ??= new GenericRepository<CartItem>(_context);
+        public ICartItemRepository CartItems => _cartItems ??= new CartItemRepository(_context);
 
         public IGenericRepository<Genre> Genres => _genres ??= new GenericRepository<Genre>(_context);
 

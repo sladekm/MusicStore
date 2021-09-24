@@ -12,13 +12,11 @@ namespace MusicStore.Data.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
         private readonly DbSet<T> _db;
 
         public GenericRepository(ApplicationDbContext context)
         {
-            _context = context;
-            _db = _context.Set<T>();
+            _db = context.Set<T>();
         }
         public async Task AddAsync(T entity)
         {
