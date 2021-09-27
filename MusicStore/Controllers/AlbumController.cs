@@ -37,7 +37,7 @@ namespace MusicStore.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.TitleSortParm = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
@@ -76,7 +76,7 @@ namespace MusicStore.Controllers
                 _ => q => q.OrderBy(a => a.Title),
             };
             int pageNumber = (page ?? 1);
-            var albums = _unitOfWork.Albums.GetPaged(expression: expression, orderBy: orderBy, include: q => q.Include(x => x.Genre).Include(x => x.Artist), pageNumber: pageNumber);
+            var albums = await _unitOfWork.Albums.GetPagedAsync(expression: expression, orderBy: orderBy, include: q => q.Include(x => x.Genre).Include(x => x.Artist), pageNumber: pageNumber);
 
             
             IEnumerable<AlbumVM> sourceList = _mapper.Map<IEnumerable<Album>, IEnumerable<AlbumVM>>(albums);

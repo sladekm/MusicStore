@@ -87,7 +87,7 @@ namespace MusicStore.Data.Repositories
             _db.UpdateRange(entities);
         }
 
-        public IPagedList<T> GetPaged(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int pageNumber = 1, int pageSize = 12)
+        public async Task<IPagedList<T>> GetPagedAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int pageNumber = 1, int pageSize = 12)
         {
             IQueryable<T> query = _db;
 
@@ -106,7 +106,7 @@ namespace MusicStore.Data.Repositories
                 query = include(query);
             }
 
-            return query.ToPagedList<T>(pageNumber, pageSize);
+            return await query.ToPagedListAsync<T>(pageNumber, pageSize);
         }
     }
 }
