@@ -75,7 +75,7 @@ namespace MusicStore.Controllers
                 "price_desc" => q => q.OrderByDescending(a => a.Price),
                 _ => q => q.OrderBy(a => a.Title),
             };
-            int pageNumber = (page ?? 1);
+            int pageNumber = page ?? 1;
             var albums = await _unitOfWork.Albums.GetPagedAsync(expression: expression, orderBy: orderBy, include: q => q.Include(x => x.Genre).Include(x => x.Artist), pageNumber: pageNumber);
 
             

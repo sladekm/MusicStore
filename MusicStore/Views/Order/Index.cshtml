@@ -1,4 +1,6 @@
-﻿@model IEnumerable<MusicStore.ViewModels.Order.OrderListVM>
+﻿@model X.PagedList.IPagedList<MusicStore.ViewModels.Order.OrderListVM>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Core.Common
 
 @{
     ViewData["Title"] = "Orders";
@@ -6,43 +8,62 @@
 
 <h1>Orders</h1>
 <hr />
+<form asp-action="Index" method="get">
+    <p>
+        Search by order ID or album title: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" class="btn btn-primary" /> |
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear search</a>
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.OrderId)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().OrderId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().OrderDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ItemsCount)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().ItemsCount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Total)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Total)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.OrderId
-            </td>
-            <td>
-                @item.OrderDate
-            </td>
-            <td>
-                @item.ItemsCount
-            </td>
-            <td>
-                @item.Total.ToString("c")
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-orderId=@item.OrderId>Details</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.OrderId
+                </td>
+                <td>
+                    @item.OrderDate
+                </td>
+                <td>
+                    @item.ItemsCount
+                </td>
+                <td>
+                    @item.Total.ToString("c")
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-orderId=@item.OrderId>Details</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<div class="mt-3">
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+     new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }),
+     new PagedListRenderOptions
+     {
+         LiElementClasses = new string[] { "page-item" },
+         PageClasses = new string[] { "page-link" }
+     })
+</div>

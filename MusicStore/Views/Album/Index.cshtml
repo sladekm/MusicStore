@@ -10,14 +10,11 @@
 <h1>Albums</h1>
 <hr />
 <form asp-action="Index" method="get">
-    @using (Html.BeginForm("Index", "Student", FormMethod.Get))
-    {
-        <p>
-            Search by title or artist: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-            <input type="submit" value="Search" class="btn btn-primary" /> |
-            <a asp-action="Index" class="btn btn-outline-secondary">Clear search</a>
-        </p>
-    }
+    <p>
+        Search by title or artist: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" class="btn btn-primary" /> |
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear search</a>
+    </p>
 </form>
 Sort by:
 <a asp-action="Index" asp-route-sortOrder=@ViewBag.TitleSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>Title</a>

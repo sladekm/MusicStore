@@ -12,7 +12,9 @@ using MusicStore.ViewModels.Order;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace MusicStore.Controllers
 {
@@ -37,12 +39,33 @@ namespace MusicStore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
         {
-            var orders = await _unitOfWork.Orders.GetAllAsync(include: q => q.Include(x => x.OrderDetails));
-            var model = _mapper.Map<List<OrderListVM>>(orders);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
-            return View(model);
+            ViewBag.CurrentFilter = searchString;
+
+            Expression<Func<Order, bool>> expression = null;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                expression = o => o.OrderId.ToString() == searchString ||  o.OrderDetails.Any(a => a.Album.Title.Contains(searchString));
+            }
+             
+            int pageNumber = page ?? 1;
+            var orders = await _unitOfWork.Orders.GetPagedAsync(expression: expression, orderBy: q => q.OrderByDescending(o => o.OrderDate), include: q => q.Include(x => x.OrderDetails).ThenInclude(x => x.Album), pageNumber: pageNumber);
+
+
+            IEnumerable<OrderListVM> sourceList = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderListVM>>(orders);
+            IPagedList<OrderListVM> pagedResult = new StaticPagedList<OrderListVM>(sourceList, orders.GetMetaData());
+            return View(pagedResult);
         }
 
         [HttpGet]
