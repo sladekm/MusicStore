@@ -1,10 +1,28 @@
 ﻿@model MusicStore.Models.ApplicationUser
 
-<li class="nav-item">
-    <a class="nav-link text-dark" asp-controller="Manage" asp-action="Index" title="Manage">Hello @Model.UserName!</a>
+<li class="dropdown">
+    <a class="nav-link dropdown-toggle text-dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        @Model.UserName
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <li><a class="dropdown-item" asp-controller="Manage" asp-action="Index">Manage account information</a></li>
+        <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">Orders</a></li>
+        <li>
+            <form class="dropdown-item p-0" asp-controller="Account" asp-action="Logout" method="post">
+                <input type="submit" value="Logout" class="form-control nav-link btn text-dark border-0" id="logoutDropdownLink">
+            </form>
+        </li>
+    </ul>
 </li>
-<li class="nav-item">
-    <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
-        <input type="submit" value="Logout" class="nav-link btn btn-link text-dark">
-    </form>
-</li>
+
+<style>
+    #logoutDropdownLink {
+        text-align: left !important;
+        padding: 4px 16px !important;
+    }
+
+    #logoutDropdownLink:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+</style>
