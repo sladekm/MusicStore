@@ -1,0 +1,48 @@
+﻿@model IEnumerable<MusicStore.ViewModels.Order.OrderListVM>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemsCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.OrderId
+            </td>
+            <td>
+                @item.OrderDate
+            </td>
+            <td>
+                @item.ItemsCount
+            </td>
+            <td>
+                @item.Total.ToString("c")
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-orderId=@item.OrderId>Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

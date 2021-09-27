@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\OrderListVM.cs" />
+    <Compile Remove="ViewModels\OrderVM.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.10" />
@@ -29,6 +34,10 @@
   <ItemGroup>
     <Folder Include="Areas\" />
     <Folder Include="Root\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Order\Index.cshtml" />
   </ItemGroup>
 
 </Project>

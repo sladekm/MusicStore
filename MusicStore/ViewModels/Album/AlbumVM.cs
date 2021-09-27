@@ -1,6 +1,9 @@
 ﻿using MusicStore.Models;
+using MusicStore.ViewModels.Artist;
+using MusicStore.ViewModels.Genre;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,21 +12,18 @@ namespace MusicStore.ViewModels.Album
 {
     public class AlbumVM
     {
+        [ScaffoldColumn(false)]
         public int AlbumId { get; set; }
-
-        public int GenreId { get; set; }
-
-        public int ArtistId { get; set; }
 
         public string Title { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
+        [ScaffoldColumn(false)]
         public string AlbumArtUrl { get; set; }
 
-        public virtual Genre Genre { get; set; }
+        public GenreVM Genre { get; set; }
 
-        public virtual Artist Artist { get; set; }
+        public ArtistVM Artist { get; set; }
     }
 }

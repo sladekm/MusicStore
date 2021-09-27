@@ -1,21 +1,24 @@
-﻿using System;
+﻿using MusicStore.ViewModels.OrderDetail;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MusicStore.Models
+namespace MusicStore.ViewModels.Order
 {
-    public class Order
+    public class OrderVM
     {
+        [Display(Name = "Order ID")]
         public int OrderId { get; set; }
 
-        public string ApplicationUserId { get; set; }
-
+        [Display(Name = "Order date")]
         public DateTime OrderDate { get; set; }
 
+        [Display(Name = "First name")]
         public string FirstName { get; set; }
 
+        [Display(Name = "Last name")]
         public string LastName { get; set; }
 
         public string Address { get; set; }
@@ -24,19 +27,19 @@ namespace MusicStore.Models
 
         public string State { get; set; }
 
+        [Display(Name = "Postal code")]
         public string PostalCode { get; set; }
 
         public string Country { get; set; }
 
+        [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }
 
         public string Email { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
+        [ScaffoldColumn(false)]
         public decimal Total { get; set; }
 
-        public virtual ApplicationUser ApplicationUser { get; set; }
-
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public IEnumerable<OrderDetailVM> OrderDetails { get; set; }
     }
 }
