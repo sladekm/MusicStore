@@ -24,5 +24,9 @@ namespace MusicStore.Models
         public virtual Genre Genre { get; set; }
 
         public virtual Artist Artist { get; set; }
+
+        public virtual ICollection<CartItem> CartItems { get; set; }
+
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

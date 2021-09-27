@@ -10,5 +10,7 @@ namespace MusicStore.Models
         public int ArtistId { get; set; }
 
         public string Name { get; set; }
+
+        public virtual ICollection<Album> Albums { get; set; }
     }
 }
