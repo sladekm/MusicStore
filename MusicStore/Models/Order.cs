@@ -10,9 +10,11 @@ namespace MusicStore.Models
     {
         public int OrderId { get; set; }
 
-        public System.DateTime OrderDate { get; set; }
+        public string ApplicationUserId { get; set; }
 
-        public string Username { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
+        public System.DateTime OrderDate { get; set; }
 
         public string FirstName { get; set; }
 
@@ -28,7 +30,7 @@ namespace MusicStore.Models
 
         public string Country { get; set; }
 
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
         public string Email { get; set; }
 

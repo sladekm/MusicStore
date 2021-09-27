@@ -39,5 +39,9 @@ namespace MusicStore.ViewModels.Account
         public string PostalCode { get; set; }
 
         public string Country { get; set; }
+
+        [Phone]
+        [Display(Name = "Phone number")]
+        public string PhoneNumber { get; set; }
     }
 }

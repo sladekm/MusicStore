@@ -14,6 +14,8 @@ namespace MusicStore.Services.ShoppingCart
         Task RemoveFromCartAsync(Album album);
         Task EmptyCartAsync();
         Task<IEnumerable<CartItem>> GetCartItemsAsync();
+        Task CreateOrderAsync(Order order);
+        Task MigrateCartAsync(string username);
         int GetCount();
         decimal GetTotal();
     }

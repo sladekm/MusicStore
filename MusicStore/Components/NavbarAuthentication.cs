@@ -19,9 +19,9 @@ namespace MusicStore.Components
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            if (_signInManager.IsSignedIn(this.User as ClaimsPrincipal))
+            if (_signInManager.IsSignedIn(User as ClaimsPrincipal))
             {
-                return View("SignedIn", await _userManager.GetUserAsync(this.User as ClaimsPrincipal));
+                return View("SignedIn", await _userManager.GetUserAsync(User as ClaimsPrincipal));
             }
             return View("SignedOut");
         }

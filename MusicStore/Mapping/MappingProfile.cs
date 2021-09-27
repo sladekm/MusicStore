@@ -2,6 +2,7 @@
 using MusicStore.Models;
 using MusicStore.ViewModels.Account;
 using MusicStore.ViewModels.Album;
+using MusicStore.ViewModels.Checkout;
 using MusicStore.ViewModels.Manage;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace MusicStore.Mapping
             CreateMap<ApplicationUser, ManageAccountInformationVM>().ReverseMap();
             CreateMap<ApplicationUser, ManageChangeBillingInformationVM>().ReverseMap();
             CreateMap<Album, AlbumVM>().ReverseMap();
+            CreateMap<ApplicationUser, CheckoutBillingInformationVM>().ReverseMap();
+            CreateMap<Order, CheckoutBillingInformationVM>().ReverseMap();
         }
     }
 }

@@ -10,6 +10,7 @@
 @if (Model.ItemsCount < 1)
 {
     <h4>Your cart is empty</h4>
+    <a asp-action="Index" asp-controller="Album" class="btn btn-outline-secondary">Browse products</a>
 }
 else
 {
@@ -55,9 +56,9 @@ else
 
                 </td>
                 <td class="text-center">
-                    <form asp-controller="Order" asp-action="Checkout" method="post">
-                        <input type="submit" value="Checkout" class="btn btn-success" aria-hidden="true">
-                    </form>
+                    <a asp-controller="Checkout" asp-action="BillingInformation" method="post" class="btn btn-success" aria-hidden="true">
+                        Checkout
+                    </a>
                 </td>
             </tr>
         </tfoot>

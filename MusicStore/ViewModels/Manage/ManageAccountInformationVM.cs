@@ -28,6 +28,9 @@ namespace MusicStore.ViewModels.Manage
 
         public string Country { get; set; }
 
+        [Display(Name = "Phone number")]
+        public string PhoneNumber { get; set; }
+
         [ScaffoldColumn(false)]
         public bool HasPassword { get; set; }
     }

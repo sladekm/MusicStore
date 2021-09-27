@@ -24,13 +24,22 @@ namespace MusicStore.Services.ShoppingCart
             var request = httpContext.Request;
             var response = httpContext.Response;
 
-            var cartId = request.Cookies["CartId"] ?? Guid.NewGuid().ToString();
+            string cartId;
 
-            //TODO Remove cart items from database after CartId expires
-            response.Cookies.Append("CartId", cartId, new CookieOptions
+            if (httpContext.User.Identity.Name != null)
             {
-                Expires = DateTime.Now.AddMonths(3)
-            });
+                cartId = httpContext.User.Identity.Name;
+            }
+            else
+            {
+                cartId = request.Cookies["CartId"] ?? Guid.NewGuid().ToString();
+
+                //TODO Remove cart items from database after CartId expires
+                response.Cookies.Append("CartId", cartId, new CookieOptions
+                {
+                    Expires = DateTime.Now.AddMonths(3)
+                });
+            }
 
             return new ShoppingCart(unitOfWork)
             {
@@ -105,6 +114,51 @@ namespace MusicStore.Services.ShoppingCart
         public decimal GetTotal()
         {
             return _unitOfWork.CartItems.GetTotal(CartId);
+        }
+
+        public async Task CreateOrderAsync(Order order)
+        {
+            var cartItems = await GetCartItemsAsync();
+            decimal orderTotal = 0;
+
+            var orderDetails = new List<OrderDetail>();
+            foreach (var item in cartItems)
+            {
+                orderDetails.Add(new OrderDetail
+                {
+                    AlbumId = item.AlbumId,
+                    OrderId = order.OrderId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.Album.Price
+                });
+
+                //Count order total here to avoid database call with GetTotal()
+                orderTotal += (item.Quantity * item.Album.Price);
+            }
+
+            await _unitOfWork.OrderDetails.AddRangeAsync(orderDetails);
+
+            order.Total = orderTotal;
+            _unitOfWork.Orders.Update(order);
+            await _unitOfWork.Save();
+
+            await EmptyCartAsync();
+        }
+
+        public async Task MigrateCartAsync(string username)
+        {
+            var cartItems = await GetCartItemsAsync();
+
+            if (cartItems != null)
+            {
+                foreach (var item in cartItems)
+                {
+                    item.CartId = username;
+                }
+
+                _unitOfWork.CartItems.UpdateRange(cartItems);
+                await _unitOfWork.Save();
+            }
         }
     }
 }

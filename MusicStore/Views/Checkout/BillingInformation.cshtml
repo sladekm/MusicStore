@@ -1,34 +1,22 @@
-﻿@model MusicStore.ViewModels.Account.AccountRegisterVM
+﻿@model MusicStore.ViewModels.Checkout.CheckoutBillingInformationVM
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Checkout";
 }
 
-<h1>Register</h1>
+<h1>Checkout</h1>
+<hr />
+<h4>Billing information</h4>
 <hr />
 <div class="row">
     <div class="col-md-6">
-        <h4>Login credentials</h4>
-        <hr />
-        <form asp-action="Register">
+        <form asp-action="CreateOrder">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PasswordConfirmation" class="control-label"></label>
-                <input asp-for="PasswordConfirmation" class="form-control" />
-                <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
-            </div>
-            <h4>Billing information (optional)</h4>
-            <hr />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -70,12 +58,13 @@
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Register" class="btn btn-primary" />
+                <input type="submit" value="Place order" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<div>
+    <a asp-action="Index" asp-controller="ShoppingCart" class="btn btn-outline-secondary">Back</a>
+</div>
+

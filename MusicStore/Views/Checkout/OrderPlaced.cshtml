@@ -1,0 +1,10 @@
+﻿@model int 
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<h1>Order Placed</h1>
+<hr />
+<h4>Your order is complete. Order ID: @Model.ToString()</h4>
+<a asp-action="Index" asp-controller="Album" class="btn btn-outline-secondary">Browse products</a>

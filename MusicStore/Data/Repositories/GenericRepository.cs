@@ -82,6 +82,11 @@ namespace MusicStore.Data.Repositories
             _db.Update(entity);
         }
 
+        public void UpdateRange(IEnumerable<T> entities)
+        {
+            _db.UpdateRange(entities);
+        }
+
         public IPagedList<T> FindPaged(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int pageNumber = 1, int pageSize = 12)
         {
             IQueryable<T> query = _db;

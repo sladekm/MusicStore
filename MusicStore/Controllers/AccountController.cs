@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using MusicStore.Models;
 using MusicStore.Services.EmailSender;
+using MusicStore.Services.ShoppingCart;
 using MusicStore.ViewModels;
 using MusicStore.ViewModels.Account;
 using System;
@@ -24,14 +25,16 @@ namespace MusicStore.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AccountController> _logger;
         private readonly IMapper _mapper;
+        private readonly IShoppingCart _shoppingCart;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ILogger<AccountController> logger, IMapper mapper)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ILogger<AccountController> logger, IMapper mapper, IShoppingCart shoppingCart)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             _mapper = mapper;
+            _shoppingCart = shoppingCart;
         }
 
         [HttpGet]
@@ -60,6 +63,9 @@ namespace MusicStore.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation($"[Login] Successful - User: {model.Email}");
+
+                    await _shoppingCart.MigrateCartAsync(model.Email);
+
                     if (!string.IsNullOrEmpty(returnUrl))
                     {
                         return LocalRedirect(returnUrl);

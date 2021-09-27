@@ -26,7 +26,7 @@ namespace MusicStore.Data.Repositories
             return _db.Where(q => q.CartId == cartId)?.Select(q => q.Quantity).Sum() ?? 0;
         }
 
-        public async Task<IEnumerable<CartItem>> GetCartItemsAsync(string cartId)
+        public async Task<IList<CartItem>> GetCartItemsAsync(string cartId)
         {
             return await _db.Where(q => q.CartId == cartId).Include(q => q.Album).ToListAsync();
         }
