@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MusicStore.Models;
 using System;
 using System.Collections.Generic;
@@ -26,8 +27,8 @@ namespace MusicStore.Areas.Administration.ViewModels.Album
         [Required]
         public decimal Price { get; set; }
 
-        [Display(Name = "Album art URL")]
-        public string AlbumArtUrl { get; set; }
+        [Display(Name = "Album art")]
+        public IFormFile AlbumArt { get; set; }
 
         public IEnumerable<SelectListItem> Genres { get; set; }
 

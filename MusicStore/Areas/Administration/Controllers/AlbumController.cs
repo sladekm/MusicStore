@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using MusicStore.Models;
 using MusicStore.ViewModels.Album;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -26,14 +28,16 @@ namespace MusicStore.Areas.Administration.Controllers
         private readonly ILogger<AlbumController> _logger;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public AlbumController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AlbumController> logger, IMapper mapper, IUnitOfWork unitOfWork)
+        public AlbumController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AlbumController> logger, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
@@ -93,15 +97,37 @@ namespace MusicStore.Areas.Administration.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var genres = await _unitOfWork.Genres.GetAllAsync();
+                model.Genres = genres.Select(q => new SelectListItem
+                {
+                    Text = q.Name,
+                    Value = q.GenreId.ToString()
+                });
+
+                var artists = await _unitOfWork.Artists.GetAllAsync();
+                model.Artists = artists.Select(q => new SelectListItem
+                {
+                    Text = q.Name,
+                    Value = q.ArtistId.ToString()
+                });
+
                 return View(model);
             }
 
-            if (String.IsNullOrEmpty(model.AlbumArtUrl))
+            string uniqueFileName = null;
+            if (!String.IsNullOrEmpty(model.AlbumArt?.FileName))
             {
-                model.AlbumArtUrl = "~/images/placeholder.gif";
+                string folderPath = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid() + "_" + model.AlbumArt.FileName;
+                string filePath = Path.Combine(folderPath, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.AlbumArt.CopyTo(fileStream);
+                }
             }
 
             var album = _mapper.Map<Album>(model);
+            album.AlbumArtUrl = String.IsNullOrEmpty(uniqueFileName) ? "~/images/placeholder.gif" : Path.Combine("~/images/", uniqueFileName);
 
             await _unitOfWork.Albums.AddAsync(album);
             await _unitOfWork.Save();
@@ -149,15 +175,37 @@ namespace MusicStore.Areas.Administration.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var genres = await _unitOfWork.Genres.GetAllAsync();
+                model.Genres = genres.Select(q => new SelectListItem
+                {
+                    Text = q.Name,
+                    Value = q.GenreId.ToString()
+                });
+
+                var artists = await _unitOfWork.Artists.GetAllAsync();
+                model.Artists = artists.Select(q => new SelectListItem
+                {
+                    Text = q.Name,
+                    Value = q.ArtistId.ToString()
+                });
+
                 return View(model);
             }
 
-            if (String.IsNullOrEmpty(model.AlbumArtUrl))
+            string uniqueFileName = null;
+            if (!String.IsNullOrEmpty(model.AlbumArt.FileName))
             {
-                model.AlbumArtUrl = "~/images/placeholder.gif";
+                string folderPath = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid() + "_" + model.AlbumArt.FileName;
+                string filePath = Path.Combine(folderPath, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.AlbumArt.CopyTo(fileStream);
+                }
             }
 
             var album = _mapper.Map<Album>(model);
+            album.AlbumArtUrl = String.IsNullOrEmpty(uniqueFileName) ? "~/images/placeholder.gif" : Path.Combine("~/images/", uniqueFileName);
 
             _unitOfWork.Albums.Update(album);
             await _unitOfWork.Save();

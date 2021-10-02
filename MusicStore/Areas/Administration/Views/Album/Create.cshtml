@@ -8,7 +8,7 @@
 <hr />
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Create">
+        <form enctype="multipart/form-data" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ReturnUrl" class="form-control" />
             <div class="form-group">
@@ -32,9 +32,8 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AlbumArtUrl" class="control-label"></label>
-                <input asp-for="AlbumArtUrl" class="form-control" />
-                <span asp-validation-for="AlbumArtUrl" class="text-danger"></span>
+                <label asp-for="AlbumArt" class="control-label"></label>
+                <input asp-for="AlbumArt" class="form-control custom-file-input" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
