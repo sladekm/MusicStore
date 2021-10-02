@@ -49,7 +49,7 @@ namespace MusicStore.Services.ShoppingCart
 
         public async Task AddToCartAsync(Album album, int quantity = 1)
         {
-            var cartItem = await _unitOfWork.CartItems.GetAsync(q => q.AlbumId == album.AlbumId && q.CartId == CartId);
+            var cartItem = await _unitOfWork.CartItems.GetCartItemAsync(album.AlbumId, CartId);
 
             if (cartItem == null)
             {
@@ -73,7 +73,7 @@ namespace MusicStore.Services.ShoppingCart
 
         public async Task RemoveFromCartAsync(Album album)
         {
-            var cartItem = await _unitOfWork.CartItems.GetAsync(q => q.AlbumId == album.AlbumId && q.CartId == CartId);
+            var cartItem = await _unitOfWork.CartItems.GetCartItemAsync(album.AlbumId, CartId);
 
             if (cartItem != null)
             {

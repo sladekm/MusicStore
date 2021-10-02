@@ -64,7 +64,7 @@ namespace MusicStore.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int orderId)
         {
-            var order = await _unitOfWork.Orders.GetAsync(q => q.OrderId == orderId, q => q.Include(x => x.OrderDetails).ThenInclude(z => z.Album));
+            var order = await _unitOfWork.Orders.GetDetailsAsync(orderId);
             var model = _mapper.Map<OrderVM>(order);
 
             return View(model);

@@ -52,7 +52,7 @@ namespace MusicStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(int albumId)
         {
-            var album = await _unitOfWork.Albums.GetAsync(q => q.AlbumId == albumId);
+            var album = await _unitOfWork.Albums.GetAsync(albumId);
             if (album == null)
             {
                 return NotFound();
@@ -68,7 +68,7 @@ namespace MusicStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCart(int albumId)
         {
-            var album = await _unitOfWork.Albums.GetAsync(q => q.AlbumId == albumId);
+            var album = await _unitOfWork.Albums.GetAsync(albumId);
             if (album == null)
             {
                 return NotFound();

@@ -10,7 +10,7 @@ namespace MusicStore.Data.IRepositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        public IGenericRepository<Album> Albums { get; }
+        public IAlbumRepository Albums { get; }
         public IGenericRepository<Artist> Artists { get; }
         public ICartItemRepository CartItems { get; }
         public IGenericRepository<Genre> Genres { get; }

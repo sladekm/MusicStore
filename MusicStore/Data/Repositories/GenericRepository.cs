@@ -18,6 +18,7 @@ namespace MusicStore.Data.Repositories
         {
             _db = context.Set<T>();
         }
+
         public async Task AddAsync(T entity)
         {
             await _db.AddAsync(entity);
@@ -26,6 +27,21 @@ namespace MusicStore.Data.Repositories
         public async Task AddRangeAsync(IEnumerable<T> entities)
         {
             await _db.AddRangeAsync(entities);
+        }
+
+        public async Task<IList<T>> GetAllAsync()
+        {
+            return await _db.ToListAsync();
+        }
+
+        public async Task<IPagedList<T>> GetAllPagedAsync(int pageNumber = 1, int pageSize = 12)
+        {
+            return await _db.ToPagedListAsync(pageNumber, pageSize);
+        }
+
+        public async Task<T> GetAsync(int id)
+        {
+            return await _db.FindAsync(id);
         }
 
         public void Remove(T entity)
@@ -38,45 +54,6 @@ namespace MusicStore.Data.Repositories
             _db.RemoveRange(entities);
         }
 
-        public async Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
-        {
-            IQueryable<T> query = _db;
-
-            if (expression != null)
-            {
-                query = query.Where(expression);
-            }
-
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            if (include != null)
-            {
-                query = include(query);
-            }
-
-            return await query.ToListAsync();
-        }
-
-        public async Task<T> GetAsync(Expression<Func<T, bool>> expression, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
-        {
-            IQueryable<T> query = _db;
-
-            if (expression != null)
-            {
-                query = query.Where(expression);
-            }
-
-            if (include != null)
-            {
-                query = include(query);
-            }
-
-            return await query.FirstOrDefaultAsync();
-        }
-
         public void Update(T entity)
         {
             _db.Update(entity);
@@ -85,28 +62,6 @@ namespace MusicStore.Data.Repositories
         public void UpdateRange(IEnumerable<T> entities)
         {
             _db.UpdateRange(entities);
-        }
-
-        public async Task<IPagedList<T>> GetPagedAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int pageNumber = 1, int pageSize = 12)
-        {
-            IQueryable<T> query = _db;
-
-            if (expression != null)
-            {
-                query = query.Where(expression);
-            }
-
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            if (include != null)
-            {
-                query = include(query);
-            }
-
-            return await query.ToPagedListAsync<T>(pageNumber, pageSize);
         }
     }
 }

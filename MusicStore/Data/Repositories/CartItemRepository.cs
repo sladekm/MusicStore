@@ -30,5 +30,10 @@ namespace MusicStore.Data.Repositories
         {
             return await _db.Where(q => q.CartId == cartId).Include(q => q.Album).ToListAsync();
         }
+
+        public async Task<CartItem> GetCartItemAsync(int albumId, string cartId)
+        {
+            return await _db.Where(q => q.AlbumId == albumId && q.CartId == cartId).FirstOrDefaultAsync();
+        }
     }
 }

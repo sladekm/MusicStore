@@ -9,6 +9,8 @@ namespace MusicStore.Data.IRepositories
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        public Task<IPagedList<Order>> GetPagedForUserAsync(string userId, string searchString, int pageNumber = 1, int pageSize = 12);
+        public Task<IPagedList<Order>> GetOrdersForUserPagedAsync(string userId, string searchString, int pageNumber = 1, int pageSize = 12);
+
+        public Task<Order> GetOrderAsync(int id);
     }
 }

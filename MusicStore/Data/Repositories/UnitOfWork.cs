@@ -10,7 +10,7 @@ namespace MusicStore.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _context;
-        private IGenericRepository<Album> _albums;
+        private IAlbumRepository _albums;
         private IGenericRepository<Artist> _artists;
         private ICartItemRepository _cartItems;
         private IGenericRepository<Genre> _genres;
@@ -22,7 +22,7 @@ namespace MusicStore.Data.Repositories
             _context = context;
         }
 
-        public IGenericRepository<Album> Albums => _albums ??= new GenericRepository<Album>(_context);
+        public IAlbumRepository Albums => _albums ??= new AlbumRepository(_context);
 
         public IGenericRepository<Artist> Artists => _artists ??= new GenericRepository<Artist>(_context);
 

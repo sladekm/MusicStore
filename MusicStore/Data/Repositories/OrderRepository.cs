@@ -17,7 +17,12 @@ namespace MusicStore.Data.Repositories
             _db = context.Set<Order>();
         }
 
-        public async Task<IPagedList<Order>> GetPagedForUserAsync(string userId, string searchString, int pageNumber, int pageSize)
+        public async Task<Order> GetOrderAsync(int id)
+        {
+            return await _db.Where(o => o.OrderId == id).Include(o => o.OrderDetails).ThenInclude(od => od.Album).FirstOrDefaultAsync();
+        }
+
+        public async Task<IPagedList<Order>> GetOrdersForUserPagedAsync(string userId, string searchString, int pageNumber, int pageSize)
         {
             IQueryable<Order> query = _db;
 

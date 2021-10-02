@@ -9,8 +9,9 @@ namespace MusicStore.Data.IRepositories
 {
     public interface ICartItemRepository : IGenericRepository<CartItem>
     {
-        public Task<IList<CartItem>> GetCartItemsAsync(string cartId);
-        public int GetCount(string cartId);
-        public decimal GetTotal(string cartId);
+        Task<IList<CartItem>> GetCartItemsAsync(string cartId);
+        Task<CartItem> GetCartItemAsync(int albumId, string cartId);
+        int GetCount(string cartId);
+        decimal GetTotal(string cartId);
     }
 }
