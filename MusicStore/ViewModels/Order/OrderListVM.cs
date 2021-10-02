@@ -14,9 +14,6 @@ namespace MusicStore.ViewModels.Order
         [Display(Name = "Date ordered")]
         public DateTime OrderDate { get; set; }
 
-        [Display(Name = "Items count")]
-        public int ItemsCount { get; set; }
-
         public decimal Total { get; set; }
     }
 }

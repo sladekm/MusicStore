@@ -14,7 +14,7 @@ namespace MusicStore.Data.IRepositories
         public IGenericRepository<Artist> Artists { get; }
         public ICartItemRepository CartItems { get; }
         public IGenericRepository<Genre> Genres { get; }
-        public IGenericRepository<Order> Orders { get; }
+        public IOrderRepository Orders { get; }
         public IGenericRepository<OrderDetail> OrderDetails { get; }
         Task Save();
     }

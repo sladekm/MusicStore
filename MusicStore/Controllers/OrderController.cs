@@ -52,16 +52,9 @@ namespace MusicStore.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            Expression<Func<Order, bool>> expression = null;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                expression = o => o.OrderId.ToString() == searchString ||  o.OrderDetails.Any(a => a.Album.Title.Contains(searchString));
-            }
-             
             int pageNumber = page ?? 1;
-            var orders = await _unitOfWork.Orders.GetPagedAsync(expression: expression, orderBy: q => q.OrderByDescending(o => o.OrderDate), include: q => q.Include(x => x.OrderDetails).ThenInclude(x => x.Album), pageNumber: pageNumber);
-
+            var user = await _userManager.GetUserAsync(User);
+            var orders = await _unitOfWork.Orders.GetPagedForUserAsync(user.Id, searchString: searchString, pageNumber: pageNumber);
 
             IEnumerable<OrderListVM> sourceList = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderListVM>>(orders);
             IPagedList<OrderListVM> pagedResult = new StaticPagedList<OrderListVM>(sourceList, orders.GetMetaData());

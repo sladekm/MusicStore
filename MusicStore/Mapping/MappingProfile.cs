@@ -29,7 +29,7 @@ namespace MusicStore.Mapping
             CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
             CreateMap<Order, OrderVM>().ReverseMap();
             CreateMap<Order, CheckoutBillingInformationVM>().ReverseMap();
-            CreateMap<OrderListVM, Order>().ReverseMap().ForMember(dst => dst.ItemsCount, o => o.MapFrom(new OrderItemsCountResolver()));
+            CreateMap<OrderListVM, Order>().ReverseMap();
         }
     }
 }
