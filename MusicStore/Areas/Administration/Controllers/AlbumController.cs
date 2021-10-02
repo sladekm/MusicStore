@@ -3,18 +3,22 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using MusicStore.Areas.Administration.ViewModels.Album;
 using MusicStore.Data.IRepositories;
 using MusicStore.Models;
+using MusicStore.ViewModels.Album;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace MusicStore.Areas.Administration.Controllers
 {
     [Area("Administration")]
-    [Authorize(Roles="Administrator")]
+    [Authorize(Roles = "Administrator")]
     public class AlbumController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,79 +36,159 @@ namespace MusicStore.Areas.Administration.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: AlbumController
-        public ActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View();
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.TitleSortParm = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewBag.ArtistSortParm = sortOrder == "artist" ? "artist_desc" : "artist";
+            ViewBag.GenreSortParm = sortOrder == "genre" ? "genre_desc" : "genre";
+            ViewBag.PriceSortParm = sortOrder == "price" ? "price_desc" : "price";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            int pageNumber = page ?? 1;
+            var albums = await _unitOfWork.Albums.GetAlbumsPagedAsync(sortOrder, searchString, pageNumber);
+
+            IEnumerable<AlbumVM> sourceList = _mapper.Map<IEnumerable<Album>, IEnumerable<AlbumVM>>(albums);
+            IPagedList<AlbumVM> pagedResult = new StaticPagedList<AlbumVM>(sourceList, albums.GetMetaData());
+            return View(pagedResult);
         }
 
-        // GET: AlbumController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet]
+        public async Task<IActionResult> Create(string returnUrl)
         {
-            return View();
+            var model = new AlbumCreateVM();
+            model.ReturnUrl = returnUrl;
+
+            var genres = await _unitOfWork.Genres.GetAllAsync();
+            model.Genres = genres.Select(q => new SelectListItem
+            {
+                Text = q.Name,
+                Value = q.GenreId.ToString()
+            });
+
+            var artists = await _unitOfWork.Artists.GetAllAsync();
+            model.Artists = artists.Select(q => new SelectListItem
+            {
+                Text = q.Name,
+                Value = q.ArtistId.ToString()
+            });
+
+            return View(model);
         }
 
-        // GET: AlbumController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: AlbumController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(AlbumCreateVM model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
-            catch
+
+            if (String.IsNullOrEmpty(model.AlbumArtUrl))
             {
-                return View();
+                model.AlbumArtUrl = "~/images/placeholder.gif";
             }
+
+            var album = _mapper.Map<Album>(model);
+
+            await _unitOfWork.Albums.AddAsync(album);
+            await _unitOfWork.Save();
+
+            if (!string.IsNullOrEmpty(model.ReturnUrl))
+            {
+                return LocalRedirect(model.ReturnUrl);
+            }
+
+            return RedirectToAction("Index");
         }
 
-        // GET: AlbumController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int albumId, string returnUrl)
         {
-            return View();
+            var album = await _unitOfWork.Albums.GetAlbumAsync(albumId);
+            if (album == null)
+            {
+                return NotFound();
+            }
+
+            var model = _mapper.Map<AlbumEditVM>(album);
+            model.ReturnUrl = returnUrl;
+
+            var genres = await _unitOfWork.Genres.GetAllAsync();           
+            model.Genres = genres.Select(q => new SelectListItem
+            {
+                Text = q.Name,
+                Value = q.GenreId.ToString()
+            });
+
+            var artists = await _unitOfWork.Artists.GetAllAsync();
+            model.Artists = artists.Select(q => new SelectListItem
+            {
+                Text = q.Name,
+                Value = q.ArtistId.ToString()
+            });
+
+            return View(model);
         }
 
-        // POST: AlbumController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(AlbumEditVM model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
-            catch
+
+            if (String.IsNullOrEmpty(model.AlbumArtUrl))
             {
-                return View();
+                model.AlbumArtUrl = "~/images/placeholder.gif";
             }
+
+            var album = _mapper.Map<Album>(model);
+
+            _unitOfWork.Albums.Update(album);
+            await _unitOfWork.Save();
+
+            if (!string.IsNullOrEmpty(model.ReturnUrl))
+            {
+                return LocalRedirect(model.ReturnUrl);
+            }
+
+            return RedirectToAction("Index");
         }
 
-        // GET: AlbumController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AlbumController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int albumId, string returnUrl)
         {
-            try
+            var album = await _unitOfWork.Albums.GetAsync(albumId);
+            if (album == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
+
+            _unitOfWork.Albums.Remove(album);
+            await _unitOfWork.Save();
+
+            if (!string.IsNullOrEmpty(returnUrl))
             {
-                return View();
+                return LocalRedirect(returnUrl);
             }
+
+            return RedirectToAction("Index");
         }
     }
 }

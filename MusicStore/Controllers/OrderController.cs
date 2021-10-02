@@ -54,7 +54,7 @@ namespace MusicStore.Controllers
 
             int pageNumber = page ?? 1;
             var user = await _userManager.GetUserAsync(User);
-            var orders = await _unitOfWork.Orders.GetPagedForUserAsync(user.Id, searchString: searchString, pageNumber: pageNumber);
+            var orders = await _unitOfWork.Orders.GetOrdersForUserPagedAsync(user.Id, searchString: searchString, pageNumber: pageNumber);
 
             IEnumerable<OrderListVM> sourceList = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderListVM>>(orders);
             IPagedList<OrderListVM> pagedResult = new StaticPagedList<OrderListVM>(sourceList, orders.GetMetaData());
@@ -64,7 +64,7 @@ namespace MusicStore.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int orderId)
         {
-            var order = await _unitOfWork.Orders.GetDetailsAsync(orderId);
+            var order = await _unitOfWork.Orders.GetOrderAsync(orderId);
             var model = _mapper.Map<OrderVM>(order);
 
             return View(model);

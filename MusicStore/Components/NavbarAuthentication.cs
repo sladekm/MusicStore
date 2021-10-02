@@ -19,14 +19,11 @@ namespace MusicStore.Components
             _signInManager = signInManager;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             if (_signInManager.IsSignedIn(User as ClaimsPrincipal))
             {
-                var user = await _userManager.GetUserAsync(User as ClaimsPrincipal);
-                ViewBag.Username = user.UserName;
-                ViewBag.IsAdmin = await _userManager.IsInRoleAsync(user, "Administrator");
-                return View("SignedIn");
+                return View("SignedIn", User.Identity.Name);
             }
             return View("SignedOut");
         }

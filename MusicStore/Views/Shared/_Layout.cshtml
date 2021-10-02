@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿
+@using Microsoft.AspNetCore.Identity
+@using MusicStore.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -27,6 +33,15 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            if (User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Administration" asp-controller="Album" asp-action="Index">Administration</a>
+                                </li>
+                            }
+                        }
                         @await Component.InvokeAsync("NavbarCartSummary")
                         @await Component.InvokeAsync("NavbarAuthentication")
                     </ul>

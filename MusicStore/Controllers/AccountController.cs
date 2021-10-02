@@ -53,7 +53,7 @@ namespace MusicStore.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(AccountLoginVM model, string returnUrl)
+        public async Task<IActionResult> Login(AccountLoginVM model)
         {
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -66,9 +66,9 @@ namespace MusicStore.Controllers
 
                     await _shoppingCart.MigrateCartAsync(model.Email);
 
-                    if (!string.IsNullOrEmpty(returnUrl))
+                    if (!string.IsNullOrEmpty(model.ReturnUrl))
                     {
-                        return LocalRedirect(returnUrl);
+                        return LocalRedirect(model.ReturnUrl);
                     }
 
                     return RedirectToAction("Index", "Home");

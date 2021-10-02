@@ -18,6 +18,11 @@ namespace MusicStore.Data.Repositories
             _db = context.Set<Album>();
         }
 
+        public async Task<Album> GetAlbumAsync(int albumId)
+        {
+            return await _db.Where(q => q.AlbumId == albumId).Include(q => q.Genre).Include(q => q.Artist).FirstOrDefaultAsync();
+        }
+
         public async Task<IPagedList<Album>> GetAlbumsPagedAsync(string sortOrder, string searchString, int pageNumber = 1, int pageSize = 12)
         {
             IQueryable<Album> query = _db;
