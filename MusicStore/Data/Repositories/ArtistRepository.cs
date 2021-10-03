@@ -30,7 +30,7 @@ namespace MusicStore.Data.Repositories
             return new SelectList(artists, "Value", "Text");
         }
 
-        public async Task<IPagedList<Artist>> GetArtistsPagedAsync(string sortOrder, string searchString, int pageNumber = 1, int pageSize = 12)
+        public async Task<IPagedList<Artist>> GetArtistsPagedAsync(string sortOrder, string searchString, int pageNumber, int pageSize)
         {
             IQueryable<Artist> query = _db;
 

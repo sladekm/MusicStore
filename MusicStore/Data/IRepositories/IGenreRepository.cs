@@ -12,6 +12,6 @@ namespace MusicStore.Data.IRepositories
     {
         SelectList GetGenresSelectList();
 
-        Task<IPagedList<Genre>> GetGenresPagedAsync(string sortOrder, string searchString, int pageNumber = 1, int pageSize = 12);
+        Task<IPagedList<Genre>> GetGenresPagedAsync(string sortOrder = null, string searchString = null, int pageNumber = 1, int pageSize = 12);
     }
 }

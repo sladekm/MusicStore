@@ -27,7 +27,7 @@ namespace MusicStore.Areas.Administration.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ArtistController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<ArtistController > logger, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
+        public ArtistController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<ArtistController> logger, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;

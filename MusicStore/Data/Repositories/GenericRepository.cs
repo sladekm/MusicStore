@@ -34,7 +34,7 @@ namespace MusicStore.Data.Repositories
             return await _db.ToListAsync();
         }
 
-        public async Task<IPagedList<T>> GetAllPagedAsync(int pageNumber = 1, int pageSize = 12)
+        public async Task<IPagedList<T>> GetAllPagedAsync(int pageNumber, int pageSize)
         {
             return await _db.ToPagedListAsync(pageNumber, pageSize);
         }

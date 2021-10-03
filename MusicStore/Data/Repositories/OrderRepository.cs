@@ -22,16 +22,18 @@ namespace MusicStore.Data.Repositories
             return await _db.Where(o => o.OrderId == id).Include(o => o.OrderDetails).ThenInclude(od => od.Album).FirstOrDefaultAsync();
         }
 
-        public async Task<IPagedList<Order>> GetOrdersForUserPagedAsync(string userId, string searchString, int pageNumber, int pageSize)
+        public async Task<IPagedList<Order>> GetOrdersPagedAsync(string searchString, int pageNumber, int pageSize, string userId)
         {
             IQueryable<Order> query = _db;
 
-            if (String.IsNullOrEmpty(userId))
+            if (!String.IsNullOrEmpty(userId))
             {
-                return null;
+                query = query.Where(o => o.ApplicationUserId == userId);
             }
-
-            query = query.Where(o => o.ApplicationUserId == userId);
+            else
+            {
+                query = query.Include(o => o.ApplicationUser);
+            }
 
             if (!String.IsNullOrEmpty(searchString))
             {

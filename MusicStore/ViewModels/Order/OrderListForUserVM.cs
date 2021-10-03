@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicStore.ViewModels.Order
 {
-    public class OrderListVM
+    public class OrderListForUserVM
     {
         [Display(Name = "Order ID")]
         public int OrderId { get; set; }

@@ -1,41 +1,39 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MusicStore.Data.IRepositories;
 using MusicStore.Models;
-using MusicStore.Services.ShoppingCart;
 using MusicStore.ViewModels.Order;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using X.PagedList;
 
-namespace MusicStore.Controllers
+namespace MusicStore.Areas.Administration.Controllers
 {
-    [Authorize]
+    [Area("Administration")]
+    [Authorize(Roles = "Administrator")]
     public class OrderController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger<OrderController> _logger;
+        private readonly ILogger<AlbumController> _logger;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IShoppingCart _shoppingCart;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public OrderController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<OrderController> logger, IMapper mapper, IUnitOfWork unitOfWork, IShoppingCart shoppingCart)
+        public OrderController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AlbumController> logger, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _shoppingCart = shoppingCart;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
@@ -53,11 +51,10 @@ namespace MusicStore.Controllers
             ViewBag.CurrentFilter = searchString;
 
             int pageNumber = page ?? 1;
-            var user = await _userManager.GetUserAsync(User);
-            var orders = await _unitOfWork.Orders.GetOrdersPagedAsync(searchString: searchString, pageNumber: pageNumber, userId: user.Id);
+            var orders = await _unitOfWork.Orders.GetOrdersPagedAsync(searchString: searchString, pageNumber: pageNumber);
 
-            IEnumerable<OrderListForUserVM> sourceList = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderListForUserVM>>(orders);
-            IPagedList<OrderListForUserVM> pagedResult = new StaticPagedList<OrderListForUserVM>(sourceList, orders.GetMetaData());
+            IEnumerable<OrderListVM> sourceList = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderListVM>>(orders);
+            IPagedList<OrderListVM> pagedResult = new StaticPagedList<OrderListVM>(sourceList, orders.GetMetaData());
             return View(pagedResult);
         }
 
