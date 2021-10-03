@@ -11,9 +11,9 @@ namespace MusicStore.Data.IRepositories
     public interface IUnitOfWork : IDisposable
     {
         public IAlbumRepository Albums { get; }
-        public IGenericRepository<Artist> Artists { get; }
+        public IArtistRepository Artists { get; }
         public ICartItemRepository CartItems { get; }
-        public IGenericRepository<Genre> Genres { get; }
+        public IGenreRepository Genres { get; }
         public IOrderRepository Orders { get; }
         public IGenericRepository<OrderDetail> OrderDetails { get; }
         Task Save();

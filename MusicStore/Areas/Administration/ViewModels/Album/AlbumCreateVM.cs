@@ -13,11 +13,11 @@ namespace MusicStore.Areas.Administration.ViewModels.Album
     {
         [Required]
         [Display(Name = "Genre")]
-        public int GenreId { get; set; }
+        public int? GenreId { get; set; }
 
         [Required]
         [Display(Name = "Artist")]
-        public int ArtistId { get; set; }
+        public int? ArtistId { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -28,9 +28,9 @@ namespace MusicStore.Areas.Administration.ViewModels.Album
         [Display(Name = "Album art")]
         public IFormFile AlbumArt { get; set; }
 
-        public IEnumerable<SelectListItem> Genres { get; set; }
+        public SelectList Genres { get; set; }
 
-        public IEnumerable<SelectListItem> Artists { get; set; }
+        public SelectList Artists { get; set; }
 
         public string ReturnUrl { get; set; }
     }

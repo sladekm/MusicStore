@@ -69,24 +69,13 @@ namespace MusicStore.Areas.Administration.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create(string returnUrl)
+        public IActionResult Create(string returnUrl)
         {
             var model = new AlbumCreateVM();
             model.ReturnUrl = returnUrl;
 
-            var genres = await _unitOfWork.Genres.GetAllAsync();
-            model.Genres = genres.Select(q => new SelectListItem
-            {
-                Text = q.Name,
-                Value = q.GenreId.ToString()
-            });
-
-            var artists = await _unitOfWork.Artists.GetAllAsync();
-            model.Artists = artists.Select(q => new SelectListItem
-            {
-                Text = q.Name,
-                Value = q.ArtistId.ToString()
-            });
+            model.Genres = _unitOfWork.Genres.GetGenresSelectList();
+            model.Artists = _unitOfWork.Artists.GetArtistsSelectList();
 
             return View(model);
         }
@@ -97,19 +86,8 @@ namespace MusicStore.Areas.Administration.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var genres = await _unitOfWork.Genres.GetAllAsync();
-                model.Genres = genres.Select(q => new SelectListItem
-                {
-                    Text = q.Name,
-                    Value = q.GenreId.ToString()
-                });
-
-                var artists = await _unitOfWork.Artists.GetAllAsync();
-                model.Artists = artists.Select(q => new SelectListItem
-                {
-                    Text = q.Name,
-                    Value = q.ArtistId.ToString()
-                });
+                model.Genres = _unitOfWork.Genres.GetGenresSelectList();
+                model.Artists = _unitOfWork.Artists.GetArtistsSelectList();
 
                 return View(model);
             }
@@ -152,19 +130,8 @@ namespace MusicStore.Areas.Administration.Controllers
             var model = _mapper.Map<AlbumEditVM>(album);
             model.ReturnUrl = returnUrl;
 
-            var genres = await _unitOfWork.Genres.GetAllAsync();           
-            model.Genres = genres.Select(q => new SelectListItem
-            {
-                Text = q.Name,
-                Value = q.GenreId.ToString()
-            });
-
-            var artists = await _unitOfWork.Artists.GetAllAsync();
-            model.Artists = artists.Select(q => new SelectListItem
-            {
-                Text = q.Name,
-                Value = q.ArtistId.ToString()
-            });
+            model.Genres = _unitOfWork.Genres.GetGenresSelectList();
+            model.Artists = _unitOfWork.Artists.GetArtistsSelectList();
 
             return View(model);
         }
@@ -175,19 +142,8 @@ namespace MusicStore.Areas.Administration.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var genres = await _unitOfWork.Genres.GetAllAsync();
-                model.Genres = genres.Select(q => new SelectListItem
-                {
-                    Text = q.Name,
-                    Value = q.GenreId.ToString()
-                });
-
-                var artists = await _unitOfWork.Artists.GetAllAsync();
-                model.Artists = artists.Select(q => new SelectListItem
-                {
-                    Text = q.Name,
-                    Value = q.ArtistId.ToString()
-                });
+                model.Genres = _unitOfWork.Genres.GetGenresSelectList();
+                model.Artists = _unitOfWork.Artists.GetArtistsSelectList();
 
                 return View(model);
             }

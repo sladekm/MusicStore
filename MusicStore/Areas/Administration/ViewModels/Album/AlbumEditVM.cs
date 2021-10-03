@@ -30,9 +30,9 @@ namespace MusicStore.Areas.Administration.ViewModels.Album
         [Display(Name = "Album art")]
         public IFormFile AlbumArt { get; set; }
 
-        public IEnumerable<SelectListItem> Genres { get; set; }
+        public SelectList Genres { get; set; }
 
-        public IEnumerable<SelectListItem> Artists { get; set; }
+        public SelectList Artists { get; set; }
 
         public string ReturnUrl { get; set; }
     }
