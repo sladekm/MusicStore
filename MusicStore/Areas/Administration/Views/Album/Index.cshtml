@@ -9,7 +9,9 @@
 
 <h1>Albums</h1>
 <hr />
-<a asp-area="Administration" asp-action="Create" asp-controller="Album" asp-route-returnUrl="@Context.Request.GetEncodedPathAndQuery()" class="btn btn-success">Add new album</a>
+<p>
+    <a asp-area="Administration" asp-action="Create" asp-controller="Album" asp-route-returnUrl="@Context.Request.GetEncodedPathAndQuery()" class="btn btn-success">Add new album</a>
+</p>
 <form asp-action="Index" method="get">
     <p>
         Search by title or artist: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)

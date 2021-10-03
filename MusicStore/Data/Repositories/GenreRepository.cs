@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace MusicStore.Data.Repositories
 {
@@ -17,6 +18,7 @@ namespace MusicStore.Data.Repositories
         {
             _db = context.Set<Genre>();
         }
+
         public SelectList GetGenresSelectList()
         {
             var genres = _db.Select(q => new SelectListItem
@@ -26,6 +28,24 @@ namespace MusicStore.Data.Repositories
             });
 
             return new SelectList(genres, "Value", "Text");
+        }
+
+        public async Task<IPagedList<Genre>> GetGenresPagedAsync(string sortOrder, string searchString, int pageNumber = 1, int pageSize = 12)
+        {
+            IQueryable<Genre> query = _db;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(g => g.Name.Contains(searchString));
+            }
+
+            query = sortOrder switch
+            {
+                "name_desc" => query.OrderByDescending(g => g.Name),
+                _ => query.OrderBy(g => g.Name)
+            };
+
+            return await query.ToPagedListAsync(pageNumber, pageSize);
         }
     }
 }

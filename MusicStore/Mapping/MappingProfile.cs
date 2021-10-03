@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using MusicStore.Areas.Administration.ViewModels.Album;
+using MusicStore.Areas.Administration.ViewModels.Artist;
+using MusicStore.Areas.Administration.ViewModels.Genre;
 using MusicStore.Models;
 using MusicStore.ViewModels.Account;
 using MusicStore.ViewModels.Album;
@@ -28,7 +30,11 @@ namespace MusicStore.Mapping
             CreateMap<Album, AlbumEditVM>().ReverseMap();
             CreateMap<Album, AlbumCreateVM>().ReverseMap();
             CreateMap<Genre, GenreVM>().ReverseMap();
+            CreateMap<Genre, GenreCreateVM>().ReverseMap();
+            CreateMap<Genre, GenreEditVM>().ReverseMap();
             CreateMap<Artist, ArtistVM>().ReverseMap();
+            CreateMap<Artist, ArtistCreateVM>().ReverseMap();
+            CreateMap<Artist, ArtistEditVM>().ReverseMap();
             CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
             CreateMap<Order, OrderVM>().ReverseMap();
             CreateMap<Order, CheckoutBillingInformationVM>().ReverseMap();

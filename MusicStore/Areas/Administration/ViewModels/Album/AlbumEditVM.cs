@@ -34,6 +34,7 @@ namespace MusicStore.Areas.Administration.ViewModels.Album
 
         public SelectList Artists { get; set; }
 
+        [ScaffoldColumn(false)]
         public string ReturnUrl { get; set; }
     }
 }
