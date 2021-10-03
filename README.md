@@ -37,6 +37,7 @@ Using:
         <li>.Net core 5, Entity framework</li>
         <li>Oauth 2 for external logins</li>
         <li>Repository and Unit of work patterns</li>
+        <li>SeriLog for logging</li>
     </ul>
 </p>
 TODOs:
