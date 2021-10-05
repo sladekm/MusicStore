@@ -16,7 +16,7 @@
         <a asp-action="Index" class="btn btn-outline-secondary">Clear search</a>
     </p>
 </form>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
@@ -57,7 +57,7 @@
                     @item.Total.ToString("c")
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-orderId=@item.OrderId>Details</a>
+                    <a asp-action="Details" asp-route-orderId=@item.OrderId class="btn btn-primary">Details</a>
                 </td>
             </tr>
         }

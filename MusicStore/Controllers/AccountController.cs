@@ -76,7 +76,7 @@ namespace MusicStore.Controllers
 
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning($"[Account lock] Locked out - User: {model.Email}");
+                    _logger.LogWarning($"[Account lock] Locked out - User: {model.Email}"); 
                     return View("AccountLocked");
                 }
 
@@ -89,6 +89,7 @@ namespace MusicStore.Controllers
                 _logger.LogWarning($"[Login] Failed (Invalid login attempt) - Email used: {model.Email}");
                 ModelState.AddModelError(string.Empty, "Invalid login attempt");
             }
+
             return View(model);
         }
 
@@ -98,13 +99,19 @@ namespace MusicStore.Controllers
         {
             _logger.LogInformation($"[Logout] Successful - User: {User.Identity.Name}");
             await _signInManager.SignOutAsync();
-            return RedirectToAction("index", "home");
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 

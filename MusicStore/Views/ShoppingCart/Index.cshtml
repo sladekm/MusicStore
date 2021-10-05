@@ -29,11 +29,11 @@ else
                 <tr>
                     <td>@item.Album.Title</td>
                     <td>
-                        <form class="d-inline" asp-action="RemoveFromCart" asp-route-albumId="@item.AlbumId" method="post">
+                        <form class="d-inline" asp-action="RemoveFromCart" asp-route-albumId="@item.Album.AlbumId" method="post">
                             <input type="submit" value="-" class="btn" />
                         </form>
                         @item.Quantity
-                        <form class="d-inline" asp-action="AddToCart" asp-route-albumId="@item.AlbumId" method="post">
+                        <form class="d-inline" asp-action="AddToCart" asp-route-albumId="@item.Album.AlbumId" method="post">
                             <input type="submit" value="+" class="btn" />
                         </form>
 

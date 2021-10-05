@@ -1,4 +1,4 @@
-﻿using MusicStore.Models;
+﻿using MusicStore.ViewModels.CartItem;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +9,7 @@ namespace MusicStore.ViewModels.ShoppingCart
 {
     public class ShoppingCartVM
     {
-        public IEnumerable<CartItem> CartItems { get; set; }
+        public IEnumerable<CartItemVM> CartItems { get; set; }
 
         [ScaffoldColumn(false)]
         public int ItemsCount { get; set; }

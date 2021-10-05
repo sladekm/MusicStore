@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using MusicStore.Data.IRepositories;
 using MusicStore.Models;
 using MusicStore.Services.ShoppingCart;
+using MusicStore.ViewModels.CartItem;
 using MusicStore.ViewModels.Checkout;
 using MusicStore.ViewModels.Manage;
 using System;
@@ -40,7 +41,7 @@ namespace MusicStore.Controllers
         public async Task<IActionResult> BillingInformation()
         {
             var cartItems = await _shoppingCart.GetCartItemsAsync();
-            if (cartItems == null)
+            if (!cartItems.Any())
             {
                 return RedirectToAction("Index", "ShoppingCart");
             }
@@ -58,12 +59,47 @@ namespace MusicStore.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrder(CheckoutBillingInformationVM model)
+        public IActionResult BillingInformation(CheckoutBillingInformationVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                return RedirectToAction("Summary", model);
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Summary(CheckoutBillingInformationVM model)
         {
             if (ModelState.IsValid)
             {
                 var cartItems = await _shoppingCart.GetCartItemsAsync();
-                if (cartItems == null)
+                if (!cartItems.Any())
+                {
+                    return RedirectToAction("Index", "ShoppingCart");
+                }
+
+                var checkoutSummaryModel = _mapper.Map<CheckoutSummaryVM>(model);
+                checkoutSummaryModel.CartItems = _mapper.Map<IEnumerable<CartItemVM>>(cartItems);
+                checkoutSummaryModel.CartTotal = _shoppingCart.GetTotal();
+
+                return View(checkoutSummaryModel);
+            }
+
+            return View("BillingInformation", model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Summary(CheckoutSummaryVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var cartItems = await _shoppingCart.GetCartItemsAsync();
+                if (!cartItems.Any())
                 {
                     return RedirectToAction("Index", "ShoppingCart");
                 }
@@ -84,7 +120,7 @@ namespace MusicStore.Controllers
                 return View("OrderPlaced", order.OrderId);
             }
 
-            return View("BillingInformation", model);
+            return RedirectToAction("Index", "ShoppingCart");
         }
     }
 }

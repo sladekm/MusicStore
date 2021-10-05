@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using MusicStore.Data.IRepositories;
 using MusicStore.Models;
 using MusicStore.Services.ShoppingCart;
+using MusicStore.ViewModels.CartItem;
 using MusicStore.ViewModels.ShoppingCart;
 using System;
 using System.Collections.Generic;
@@ -37,9 +38,10 @@ namespace MusicStore.Controllers
         // GET: ShoppingCartController
         public async Task<IActionResult> Index()
         {
+            var cartItems = await _shoppingCart.GetCartItemsAsync();
             var shoppingCartVM = new ShoppingCartVM
             {
-                CartItems = await _shoppingCart.GetCartItemsAsync(),
+                CartItems = _mapper.Map<IEnumerable<CartItemVM>>(cartItems),
                 ItemsCount = _shoppingCart.GetCount(),
                 CartTotal = _shoppingCart.GetTotal()
             };

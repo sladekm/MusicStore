@@ -6,6 +6,7 @@ using MusicStore.Models;
 using MusicStore.ViewModels.Account;
 using MusicStore.ViewModels.Album;
 using MusicStore.ViewModels.Artist;
+using MusicStore.ViewModels.CartItem;
 using MusicStore.ViewModels.Checkout;
 using MusicStore.ViewModels.Genre;
 using MusicStore.ViewModels.Manage;
@@ -36,8 +37,10 @@ namespace MusicStore.Mapping
             CreateMap<Artist, ArtistCreateVM>().ReverseMap();
             CreateMap<Artist, ArtistEditVM>().ReverseMap();
             CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
+            CreateMap<CartItem, CartItemVM>().ReverseMap();
+            CreateMap<CheckoutSummaryVM, CheckoutBillingInformationVM>().ReverseMap();
             CreateMap<Order, OrderVM>().ReverseMap();
-            CreateMap<Order, CheckoutBillingInformationVM>().ReverseMap();
+            CreateMap<Order, CheckoutSummaryVM>().ReverseMap();
             CreateMap<OrderListForUserVM, Order>().ReverseMap();
             CreateMap<OrderListVM, Order>().ReverseMap().ForMember(dst => dst.Username, o => o.MapFrom(src => src.ApplicationUser.UserName));
         }
