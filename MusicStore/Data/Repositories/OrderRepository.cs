@@ -22,7 +22,7 @@ namespace MusicStore.Data.Repositories
             return await _db.Where(o => o.OrderId == id).Include(o => o.OrderDetails).ThenInclude(od => od.Album).FirstOrDefaultAsync();
         }
 
-        public async Task<IPagedList<Order>> GetOrdersPagedAsync(string searchString, int pageNumber, int pageSize, string userId)
+        public async Task<IPagedList<Order>> GetOrdersPagedAsync(string sortOrder, string searchString, int pageNumber, int pageSize, string userId)
         {
             IQueryable<Order> query = _db;
 
@@ -40,7 +40,19 @@ namespace MusicStore.Data.Repositories
                 query = query.Where(o => o.OrderId.ToString() == searchString || o.OrderDetails.Any(a => a.Album.Title.Contains(searchString)));
             }
 
-            query = query.OrderByDescending(o => o.OrderDate);
+            query = sortOrder switch
+            {
+                "orderDate" => query.OrderBy(a => a.OrderDate),
+                "orderId" => query.OrderBy(a => a.OrderId),
+                "orderId_desc" => query.OrderByDescending(a => a.OrderId),
+                "username" => query.OrderBy(a => a.ApplicationUser.UserName),
+                "username_desc" => query.OrderByDescending(a => a.ApplicationUser.UserName),
+                "email" => query.OrderBy(a => a.Email),
+                "email_desc" => query.OrderByDescending(a => a.Email),
+                "total" => query.OrderBy(a => a.Total),
+                "total_desc" => query.OrderByDescending(a => a.Total),
+                _ => query.OrderByDescending(o => o.OrderDate),
+            };
 
             return await query.ToPagedListAsync<Order>(pageNumber, pageSize);
         }

@@ -117,10 +117,17 @@ namespace MusicStore.Controllers
                 await _unitOfWork.Save();
                 await _shoppingCart.CreateOrderAsync(order);
 
-                return View("OrderPlaced", order.OrderId);
+                return RedirectToAction("OrderPlaced", new { orderId = order.OrderId });
             }
 
             return RedirectToAction("Index", "ShoppingCart");
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult OrderPlaced(int orderId)
+        {
+            return View(orderId);
         }
     }
 }

@@ -20,19 +20,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().OrderId)
+                <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.OrderIdSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().OrderId)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().OrderDate)
+                <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.OrderDateSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().OrderDate)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().Username)
+                <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.UsernameSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().Username)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().Email)
+                <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.EmailSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().Email)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().Total)
+                <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.TotalSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().Total)</a>
             </th>
             <th></th>
         </tr>

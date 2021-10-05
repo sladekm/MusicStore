@@ -18,14 +18,12 @@
         <a asp-action="Index" class="btn btn-outline-secondary">Clear search</a>
     </p>
 </form>
-Sort by:
-<a asp-action="Index" asp-controller="Artist" asp-route-sortOrder=@ViewBag.NameSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>Name</a>
 <div>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
+                    <a asp-action="Index" asp-controller="Artist" asp-route-sortOrder=@ViewBag.NameSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().Name)</a>                    
                 </th>
                 <th></th>
             </tr>

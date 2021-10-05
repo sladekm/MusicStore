@@ -27,13 +27,13 @@ else
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.FirstOrDefault().OrderId)
+                    <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.OrderIdSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().OrderId)</a>
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstOrDefault().OrderDate)
+                <th>                    
+                    <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.OrderDateSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().OrderDate)</a>
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstOrDefault().Total)
+                <th>                  
+                    <a asp-action="Index" asp-controller="Order" asp-route-sortOrder=@ViewBag.TotalSortParm asp-route-currentFilter=@ViewBag.CurrentFilter>@Html.DisplayNameFor(model => model.FirstOrDefault().Total)</a>
                 </th>
                 <th></th>
             </tr>

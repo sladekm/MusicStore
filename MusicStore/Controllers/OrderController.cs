@@ -39,8 +39,13 @@ namespace MusicStore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.OrderIdSortParm = String.IsNullOrEmpty(sortOrder) ? "orderDate" : "";
+            ViewBag.OrderDateSortParm = sortOrder == "orderId" ? "orderId_desc" : "orderId";
+            ViewBag.TotalSortParm = sortOrder == "total" ? "total_desc" : "total";
+
             if (searchString != null)
             {
                 page = 1;
@@ -54,7 +59,7 @@ namespace MusicStore.Controllers
 
             int pageNumber = page ?? 1;
             var user = await _userManager.GetUserAsync(User);
-            var orders = await _unitOfWork.Orders.GetOrdersPagedAsync(searchString: searchString, pageNumber: pageNumber, userId: user.Id);
+            var orders = await _unitOfWork.Orders.GetOrdersPagedAsync(sortOrder: sortOrder, searchString: searchString, pageNumber: pageNumber, userId: user.Id);
 
             IEnumerable<OrderListForUserVM> sourceList = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderListForUserVM>>(orders);
             IPagedList<OrderListForUserVM> pagedResult = new StaticPagedList<OrderListForUserVM>(sourceList, orders.GetMetaData());

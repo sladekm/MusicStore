@@ -37,8 +37,15 @@ namespace MusicStore.Areas.Administration.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.OrderIdSortParm = String.IsNullOrEmpty(sortOrder) ? "orderDate" : "";
+            ViewBag.OrderDateSortParm = sortOrder == "orderId" ? "orderId_desc" : "orderId";
+            ViewBag.UsernameSortParm = sortOrder == "username" ? "username_desc" : "username";
+            ViewBag.EmailSortParm = sortOrder == "email" ? "email_desc" : "email";
+            ViewBag.TotalSortParm = sortOrder == "total" ? "total_desc" : "total";
+
             if (searchString != null)
             {
                 page = 1;
@@ -51,7 +58,7 @@ namespace MusicStore.Areas.Administration.Controllers
             ViewBag.CurrentFilter = searchString;
 
             int pageNumber = page ?? 1;
-            var orders = await _unitOfWork.Orders.GetOrdersPagedAsync(searchString: searchString, pageNumber: pageNumber);
+            var orders = await _unitOfWork.Orders.GetOrdersPagedAsync(sortOrder: sortOrder, searchString: searchString, pageNumber: pageNumber);
 
             IEnumerable<OrderListVM> sourceList = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderListVM>>(orders);
             IPagedList<OrderListVM> pagedResult = new StaticPagedList<OrderListVM>(sourceList, orders.GetMetaData());
