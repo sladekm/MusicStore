@@ -75,8 +75,8 @@ namespace MusicStore
             services.AddAuthentication()
                 .AddFacebook(options =>
                 {
-                    options.AppId= "576735066791280";
-                    options.AppSecret = "5f51612638494f5990e2a3ff75db9199";
+                    options.AppId= "";
+                    options.AppSecret = "";
                 });
 
             //Email service
